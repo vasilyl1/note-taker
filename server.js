@@ -61,6 +61,31 @@ app.post('/api/notes', (req, res) => { // posts the new note and returns the new
 
 });
 
+app.delete('api/notes/:delID',(req,res) => { //deletes the note from the database
+    console.info(req.params.delID);
+    if (req.params.id) { // the parameter is passed ok
+        fs.readFile(DATABASE, 'utf-8', (err, data) => { // reading the file into the buffer
+            if (err) {
+                console.error(err);
+            } else {
+                const buffer = JSON.parse(data); // getting existing data
+                buffer = buffer.filter((element) => {return (element !== req.params.delID) }); // returns the new array deletes element id
+                fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
+                    if (err) {
+                        console.error(err);
+                        res.status(err).send("delete note from the file failed");
+                    } else {
+                        res.status(201).send(buffer); // returning the new list of notes
+                    }
+                });
+    
+            }
+        });
+
+    }
+
+});
+
 app.listen(PORT, () =>
     console.log(`App listening at http://localhost:${PORT} `)
 );
