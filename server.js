@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const randomID = require('./lib/mathFunctions.js');
 const PORT = 3001; // server to listen to this port
 const DATABASE = './db/db.json'; // database file for storing notes data
 
@@ -37,7 +38,7 @@ app.get('/api/notes', (req, res) => { // returns all existing Notes
 app.post('/api/notes', (req, res) => { // posts the new note and returns the new note to the client
     console.info(`POST /api/notes should received a new note and saved it.`);
     const note = req.body; // json with the data from the client 
-    note.id = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); // generates random ID
+    note.id = randomID(); // generates random ID
 
     console.info(note);
 
@@ -49,7 +50,7 @@ app.post('/api/notes', (req, res) => { // posts the new note and returns the new
             while (buffer.filter((el) => { return (el.id === note.id) }).length > 0) {
                 // this is checking if we have assigned duplicate id.
                 // If so, generates the new id
-                note.id = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+                note.id = randomID();
             };
             buffer.push(note); // adding the new note to the end
             fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
