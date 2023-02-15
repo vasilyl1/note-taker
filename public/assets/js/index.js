@@ -31,7 +31,12 @@ const getNotes = () =>
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  })
+  .then((res) => res.json())
+    .then((notes) => {return notes})
+    .catch((error) => {
+      console.error('Error in GET request in getting note:', error);
+    });;
 
 const saveNote = (note) =>
   fetch('http://localhost:3001/api/notes', {
