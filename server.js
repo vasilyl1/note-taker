@@ -61,15 +61,15 @@ app.post('/api/notes', (req, res) => { // posts the new note and returns the new
 
 });
 
-app.delete('api/notes/:delID',(req,res) => { //deletes the note from the database
-    console.info(req.params.delID);
+app.delete('/api/notes/:id',(req,res) => { //deletes the note from the database
+    console.info(req.params.id);
     if (req.params.id) { // the parameter is passed ok
         fs.readFile(DATABASE, 'utf-8', (err, data) => { // reading the file into the buffer
             if (err) {
                 console.error(err);
             } else {
                 const buffer = JSON.parse(data); // getting existing data
-                buffer = buffer.filter((element) => {return (element !== req.params.delID) }); // returns the new array deletes element id
+                buffer = buffer.filter((element) => {return (element !== req.params.id) }); // returns the new array deletes element id
                 fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
                     if (err) {
                         console.error(err);
