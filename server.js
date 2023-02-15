@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const PORT = 3001; // server to listen to this port
-const DATABASE = './db/db.json'; // current file for storing data
+const DATABASE = './db/db.json'; // database file for storing notes data
 
 const app = express();
 
@@ -46,6 +46,11 @@ app.post('/api/notes', (req, res) => { // posts the new note and returns the new
             console.error(err);
         } else {
             const buffer = JSON.parse(data); // getting existing data
+            while (buffer.filter((el) => { return (el.id === note.id) }).length > 0) {
+                // this is checking if we have assigned duplicate id.
+                // If so, generates the new id
+                note.id = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            };
             buffer.push(note); // adding the new note to the end
             fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
                 if (err) {
@@ -61,16 +66,15 @@ app.post('/api/notes', (req, res) => { // posts the new note and returns the new
 
 });
 
-app.delete('/api/notes/:id',(req,res) => { //deletes the note from the database
-    console.info(req.params.id);
+app.delete('/api/notes/:id', (req, res) => { //deletes the note from the database
     if (req.params.id) { // the parameter is passed ok
         fs.readFile(DATABASE, 'utf-8', (err, data) => { // reading the file into the buffer
             if (err) {
                 console.error(err);
             } else {
-                const buffer = JSON.parse(data); // getting existing data
-                buffer = buffer.filter((element) => {return (element !== req.params.id) }); // returns the new array deletes element id
-                fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
+                let buffer = JSON.parse(data); // getting existing data
+                buffer = buffer.filter((el) => { return (el.id !== req.params.id) }); // returns the new array without the deleted element
+                fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => { // rewrites the file with the new data
                     if (err) {
                         console.error(err);
                         res.status(err).send("delete note from the file failed");
@@ -78,7 +82,7 @@ app.delete('/api/notes/:id',(req,res) => { //deletes the note from the database
                         res.status(201).send(buffer); // returning the new list of notes
                     }
                 });
-    
+
             }
         });
 

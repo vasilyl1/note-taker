@@ -26,7 +26,7 @@ const hide = (elem) => {
 let activeNote = {};
 
 const getNotes = () =>
-  fetch('http://localhost:3001/api/notes', {
+  fetch('/api/notes', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const getNotes = () =>
     });;
 
 const saveNote = (note) =>
-  fetch('http://localhost:3001/api/notes', {
+  fetch('/api/notes', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const saveNote = (note) =>
   });
 
 const deleteNote = (id) =>
-  fetch(`http://localhost:3001/api/notes/${id}`, {
+  fetch(`/api/notes/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -103,6 +103,7 @@ const handleNoteDelete = (e) => {
 const handleNoteView = (e) => {
   e.preventDefault();
   activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
+  if (!(activeNote)) {activeNote = {}};
   renderActiveNote();
 };
 
@@ -159,7 +160,7 @@ const renderNoteList = async (notes) => {
   };
 
   if (jsonNotes.length === 0) {
-    noteListItems.push(createLi('No saved Notes', false));
+    noteListItems.push(createLi('No saved notes', false));
   }
 
   jsonNotes.forEach((note) => {
