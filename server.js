@@ -26,7 +26,7 @@ app.get('/api/notes', (req, res) => { // returns all existing Notes
         if (err) {
             console.error(err);
         } else {
-            res.status(200).json(data); // returning json of notes to the client
+            res.status(200).send(data); // returning json of notes to the client
         }
     });
 
