@@ -33,7 +33,6 @@ const getNotes = () =>
     },
   })
   .then((res) => res.json())
-    .then((notes) => {return notes})
     .catch((error) => {
       console.error('Error in GET request in getting note:', error);
     });;

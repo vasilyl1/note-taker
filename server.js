@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const PORT = 3001; // server to listen to this port
+const DATABASE = './db/db.json'; // current file for storing data
 
 const app = express();
 
@@ -22,9 +23,10 @@ app.get('/', (req, res) =>
 // API routes
 app.get('/api/notes', (req, res) => { // returns all existing Notes
     console.info(`GET /api/notes to read db.json and return all saved notes as JSON`);
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    fs.readFile(DATABASE, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
+            res.status(err).send("read note from file failed");
         } else {
             res.status(200).send(data); // returning json of notes to the client
         }
@@ -33,25 +35,30 @@ app.get('/api/notes', (req, res) => { // returns all existing Notes
 });
 
 app.post('/api/notes', (req, res) => { // posts the new note and returns the new note to the client
-    console.info(`POST /api/notes should receive a new note to save 
-        on the request body, add it to the db.json file, and then return 
-        the new note to the client. You'll need to find a way to give each 
-        note a unique id when it's saved (look into npm packages that could 
-            do this for you).`);
+    console.info(`POST /api/notes should received a new note and saved it.`);
+    const note = req.body; // json with the data from the client 
+    note.id = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); // generates random ID
 
-    const note = req.body; // client sends json.stringify
-    const newNote = note;
+    console.info(note);
 
+    fs.readFile(DATABASE, 'utf-8', (err, data) => { // reading the file into the buffer
+        if (err) {
+            console.error(err);
+        } else {
+            const buffer = JSON.parse(data); // getting existing data
+            buffer.push(note); // adding the new note to the end
+            fs.writeFile(DATABASE, JSON.stringify(buffer), 'utf8', (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(err).send("append note to file failed");
+                } else {
+                    res.status(201).send(buffer); // returning the saved note
+                }
+            });
 
+        }
+    });
 
-    // write to the DB functionality here
-
-
-    const response = {
-        status: 'success',
-        body: newNote,
-    }
-    res.status(201).json(response);
 });
 
 app.listen(PORT, () =>
