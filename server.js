@@ -23,7 +23,6 @@ app.get('/', (req, res) =>
 
 // API routes
 app.get('/api/notes', (req, res) => { // returns all existing Notes
-    console.info(`GET /api/notes to read db.json and return all saved notes as JSON`);
     fs.readFile(DATABASE, 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -36,11 +35,8 @@ app.get('/api/notes', (req, res) => { // returns all existing Notes
 });
 
 app.post('/api/notes', (req, res) => { // posts the new note and returns the new note to the client
-    console.info(`POST /api/notes should received a new note and saved it.`);
     const note = req.body; // json with the data from the client 
     note.id = randomID(); // generates random ID
-
-    console.info(note);
 
     fs.readFile(DATABASE, 'utf-8', (err, data) => { // reading the file into the buffer
         if (err) {
