@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const randomID = require('./lib/mathFunctions.js');
-const PORT = 8080; // server to listen to this port
+const PORT = 80; // server to listen to this port
 const DATABASE = './db/db.json'; // database file for storing notes data
 
 const app = express();
