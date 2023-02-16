@@ -25,7 +25,7 @@ This application is client server architecture using JavaScript, HTML and CSS on
 
 Launch the application using the following URL from the browser of the device connected to Internet: 
 
-HEROKU URL
+https://note-taker-vl1.herokuapp.com/
 
 ## Usage
 
